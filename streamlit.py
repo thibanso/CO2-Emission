@@ -224,7 +224,7 @@ if page == pages[7]: #Démo
     #endregion
     
     #region encodage, chargement du fichier
-    df = pd.read_csv('data_cleaned(1).csv', index_col=0)
+    df = pd.read_csv('data_cleaned.csv', index_col=0)
     X = df.drop(columns='Ewltp (g/km)')
     y = df['Ewltp (g/km)'] 
 
