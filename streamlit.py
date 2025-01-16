@@ -11,6 +11,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 import joblib
+import zipfile
+
 #endregion
 
 #region option
@@ -21,7 +23,7 @@ warnings.filterwarnings('ignore')
 
 #region sidebar
 st.sidebar.title("Sommaire")
-pages= ['👨‍💻Contexte',"🖼️ Cadre de l'analyse des données",'🧹 Nettoyage des données','📈 Data Visualisation', '🏭 Pre-processing','🤖 Modélisation','📚 Conclusion']
+pages= ['👨‍💻Contexte',"🖼️ Cadre de l'analyse des données",'🧹 Nettoyage des données','📈 Data Visualisation', '🏭 Pre-processing','🤖 Modélisation','📚 Conclusion','🚘 Démo']
 page=st.sidebar.radio('Allez vers', pages)
 
 st.markdown(
@@ -41,12 +43,6 @@ st.sidebar.title("Membres du projet :")
 
 # Liste des membres avec leurs liens GitHub et LinkedIn
 members = [
-    {"name": "Antoine BARBIER",
-    "github": "https://github.com/Antoine-DA",
-    "linkedin": "https://www.linkedin.com/in/antoine-barbier-83654415b/"},
-    {"name": "Flora BREN",
-    "github": "https://github.com/bobmartin",
-    "linkedin": "https://www.linkedin.com/in/flora-b-68a80013a"},
     {"name": "Thibault EL MANSOURI",
     "github": "https://github.com/thibanso",
     "linkedin": "https://www.linkedin.com/in/el-mansouri-299932130/"},
@@ -139,7 +135,7 @@ if page == pages[1]: #Cadre analyse des données
         Il a été renommé df_eu pour la première partie d’observation du fichier.
 
         Il contient les informations suivantes :""" % url)
-        df = pd.read_excel('tableau.xlsx', sheet_name='df_eu')
+        
         st.dataframe(df)
     st.markdown("""
     Les deux fichiers contiennent des informations intéressantes et utiles pour alimenter le sujet.
@@ -189,11 +185,11 @@ permis de réduire drastiquement la taille de notre jeu de données.""")
         st.code("""df_eu = df_eu.drop(columns=drop_col)
                 """)
 
-if page == pages[5]: #Modélisation
+if page == pages[7]: #Démo
     #region Titre formulaire
     st.markdown(f"""
               <style>
-              .centered {{
+              .title {{
                   display: flex;
                     justify-content: center;
                     align-items: center;
@@ -206,7 +202,7 @@ if page == pages[5]: #Modélisation
                     padding: 20px;
               }}
               </style>
-              <div class="centered"> Prédiction des émissions de CO2 </div>
+              <div class="title"> Prédiction des émissions de CO2 </div>
               """,unsafe_allow_html=True)
     #endregion
     
@@ -228,7 +224,7 @@ if page == pages[5]: #Modélisation
     #endregion
     
     #region encodage, chargement du fichier
-    df = pd.read_csv('data_cleaned.csv', index_col=0)
+    df = pd.read_csv('data_cleaned(1).csv', index_col=0)
     X = df.drop(columns='Ewltp (g/km)')
     y = df['Ewltp (g/km)'] 
 
@@ -286,7 +282,12 @@ if page == pages[5]: #Modélisation
         
         input_df = pd.DataFrame([data])
         input_df[num_col]=scaler.transform(input_df[num_col])
-        random_forest = joblib.load('model')
+        
+        zip_path = "model.zip"
+        with zipfile.ZipFile(zip_path,'r') as zip_ref:
+            zip_ref.extractall()
+        model_path= 'model'
+        random_forest = joblib.load(model_path)
         pred = random_forest.predict(input_df)
 
      #region couleur résultat
@@ -327,3 +328,124 @@ if page == pages[5]: #Modélisation
             )
 
     #endregion
+
+# Fonction pour charger les données une seule fois
+@st.cache_data
+def load_data():
+    # Charger le fichier CSV
+    return pd.read_csv("data_cleaned.csv", index_col=0)
+
+if page == pages[3]:  # Data Visualisation
+
+    # Charger les données une seule fois
+    data_cleaned = load_data()
+
+    st.header("Distribution de la variable cible : Emissions CO2 (g/km)")
+
+    st.write("""
+    La distribution de la variable cible nous permet de visualiser comment les émissions de CO2 (en g/km) sont réparties dans notre jeu de données.
+    Cela peut nous aider à identifier des tendances générales, des valeurs extrêmes ou des comportements inhabituels dans les données.
+    """)
+
+    # Créer le graphique de distribution
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data_cleaned['Ewltp (g/km)'], kde=True, bins=30, color='blue', edgecolor='black')
+    plt.title('Distribution des émissions de CO2 (g/km)', fontsize=16)
+    plt.xlabel('Emissions CO2 (g/km)', fontsize=12)
+    plt.ylabel('Fréquence', fontsize=12)
+
+    # Afficher le graphique dans Streamlit
+    st.pyplot(plt)
+    
+    # Affichage de la heatmap
+    st.header("Voici la heatmap des corrélations entre les variables numériques :")
+    st.write("""
+    Cette heatmap permet d'analyser les corrélations entre les différentes variables numériques de notre jeu de données. 
+    Cela nous permet de comprendre comment les variables se lient entre elles et de mieux saisir l'impact de certaines caractéristiques sur les émissions de CO2.
+    """)
+    
+    # Sélectionner les colonnes numériques
+    data_numeric = data_cleaned[['m (kg)', 'Ewltp (g/km)', 'ec (cm3)', 'ep (KW)', 'Fuel consumption ']]
+    
+    # Calculer la matrice de corrélation
+    correlation_matrix = data_numeric.corr()
+    
+    # Afficher la heatmap
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+    plt.title('Matrice de corrélation des variables numériques')
+    st.pyplot(plt)  # Affiche la heatmap dans Streamlit
+    st.header("Analyse de l'impact des paramètres sur les émissions de CO2")
+    st.write("""
+    Les graphiques ci-dessous montrent la relation entre les émissions de CO2 et différents paramètres des véhicules, ceci sera affiché toujours en fonction des types de carburants. 
+    L'objectif est de visualiser l'impact de la masse, de la capacité du moteur, de sa puissance et de la consommation de carburant 
+    sur ces émissions CO2 afin de mieux comprendre comment ces caractéristiques influencent l'empreinte écologique des véhicules.
+    """)
+
+
+    # Dictionnaire pour associer les colonnes aux noms plus clairs uniquement pour l'affichage
+    colonnes_renommees = {
+        'm (kg)': 'Masse du véhicule (kg)',
+        'ec (cm3)': 'Capacité moteur (cm3)',
+        'ep (KW)': 'Puissance moteur (KW)',
+        'Fuel consumption ': 'Consommation de carburant (L/100km)',
+        'Ewltp (g/km)': 'Emissions CO2 (g/km)'  # Emissions CO2 est l'axe Y fixe
+    }
+
+    # Liste des colonnes disponibles pour l'axe X
+    colonnes_disponibles = ['m (kg)', 'ec (cm3)', 'ep (KW)', 'Fuel consumption ']
+
+    # Renommer les colonnes disponibles en affichage lisible (utilisation du dictionnaire)
+    colonnes_disponibles_renommees = [colonnes_renommees[col] for col in colonnes_disponibles]
+
+    # Liste déroulante pour choisir la colonne pour l'axe X avec les noms clairs
+    axe_x_choisi = st.selectbox('Choisissez la colonne pour l\'axe X', colonnes_disponibles_renommees)
+
+    # On récupère la colonne d'origine en fonction du choix fait par l'utilisateur
+    axe_x = [col for col, name in colonnes_renommees.items() if name == axe_x_choisi][0]
+
+    # L'axe Y est fixe sur 'Ewltp (g/km)' pour les émissions CO2
+    axe_y = 'Ewltp (g/km)'
+    axe_y_renomme = colonnes_renommees[axe_y]  # Nom affiché pour l'axe Y
+
+    # Créer le graphique de relation entre les colonnes choisies
+    st.write("Voici le graphique :")
+    plt.figure(figsize=(10, 8))
+    sns.scatterplot(x=axe_x, y=axe_y, hue='fuel_type', data=data_cleaned)
+    plt.title(f'Relation entre la variable {axe_x_choisi} et les émissions CO2 en g/km')
+    plt.xlabel(axe_x_choisi)
+    plt.ylabel(axe_y_renomme)
+    plt.legend(title='Type de carburant')
+    st.pyplot(plt)  # Affiche le graphique dans Streamlit
+
+    # Texte explicatif pour le scatterplot
+    if axe_x == 'm (kg)':  # Masse du véhicule
+        st.markdown("""
+        *Ce graphique montre la relation entre la masse du véhicule (en kg) et les émissions de CO2 (en g/km).* 
+        *Les véhicules plus lourds ont tendance à produire davantage d’émissions de CO2.* 
+        *Nous pouvons supposer que cela s’explique par le fait que les véhicules plus lourds nécessitent plus d'énergie pour être déplacés, ce qui entraîne une combustion accrue de carburant.*
+        *La masse d’un véhicule est un facteur clé influençant les émissions de CO2, mais l’impact varie selon le type de carburant utilisé.*
+        """)
+
+    elif axe_x == 'ec (cm3)':  # Capa moteur
+        st.markdown("""
+        *Ce graphique montre la relation entre la capacité du moteur (en cm³) et les émissions de CO2.* 
+        *Les véhicules avec un moteur plus gros (plus de cm³) émettent davantage de CO2, car ces moteurs nécessitent plus de carburant pour fonctionner,* 
+        *ce qui entraîne une combustion plus importante et une production accrue de gaz à effet de serre, notamment du dioxyde de carbone.*
+        """)
+
+    elif axe_x == 'ep (KW)':  # Puissance du moteur
+        st.markdown("""
+        *Ce graphique montre la relation entre la puissance du moteur (en kW) et les émissions de CO2.* 
+        *Une puissance plus élevée est associée à des émissions de CO2 plus élevées, car un moteur plus puissant consomme davantage de carburant pour générer cette énergie supplémentaire,* 
+        *ce qui entraîne une augmentation des rejets de gaz à effet de serre dans l'atmosphère.*
+        """)
+
+    elif axe_x == 'Fuel consumption ':  # Consommation de carburant
+        st.markdown("""
+        *Ce graphique montre la relation entre la consommation de carburant (en litres aux 100 km) et les émissions de CO2.* 
+        *Nous observons un lien entre la consommation de carburant et les émissions de CO2. Lorsque la consommation augmente, les émissions tendent également à augmenter.* 
+        *Nous pouvons supposer qu’une plus grande consommation entraîne une combustion accrue de carburant, entraînant plus d'émissions de CO2.*
+        """)
+
+
