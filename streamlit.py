@@ -22,6 +22,7 @@ warnings.filterwarnings('ignore')
 #endregion
 
 #region sidebar
+st.sidebar.title("On going project")
 st.sidebar.title("Sommaire")
 pages= ['👨‍💻Contexte',"🖼️ Cadre de l'analyse des données",'🧹 Nettoyage des données','📈 Data Visualisation', '🏭 Pre-processing','🤖 Modélisation','📚 Conclusion','🚘 Démo']
 page=st.sidebar.radio('Allez vers', pages)
