@@ -727,3 +727,51 @@ if page == pages[7]: #Démo
             )
     st.image('image/etiquette_CO2.png')
     #endregion
+
+if page == pages[6]:  # Vérification si la page actuelle est la 6e (Conclusion)
+    st.title("Apprentissages et difficultés du projet") 
+    
+    # Regroupement des trois premières parties sous forme de résumé
+    with st.expander("**1. Gestion et exploration des données**"):
+        st.write(
+            """
+            Nous avons rencontré plusieurs défis liés à la gestion et à la compréhension des données. 
+            Le volume important du fichier initial (plus de 2 Go) a nécessité la mise en place de solutions efficaces pour le traitement et le partage des données.  
+            Lors de l'exploration du dataset, des difficultés techniques et conceptuelles ont émergé, notamment sur les technologies de réduction des émissions de CO₂, 
+            mais cela a enrichi nos connaissances dans le domaine automobile. Enfin, un nettoyage approfondi a été effectué, avec la suppression de 15 colonnes 
+            non pertinentes ou vides, rendant le dataset plus clair et adapté à nos analyses.
+            """
+        )
+
+    # Difficultés avec GridSearch
+    with st.expander("**2. Difficulté à utiliser GridSearch**"):
+        st.write(
+            """
+            L’optimisation des modèles via GridSearch a posé des défis en raison de ses fortes exigences en mémoire et en calcul. 
+            Cependant, nous avons surmonté ces limitations en obtenant des résultats probants, tout en apprenant à gérer 
+            des processus gourmands en ressources de manière plus efficace.
+            """
+        )
+
+    # Résumé des Objectifs et Perspectives
+    with st.expander("**3. Objectifs et perspectives futures**"):
+        st.write(
+            """
+            **Objectifs du projet :**
+            Notre outil a pour but de permettre aux constructeurs automobiles de prédire les émissions de CO₂ d'un véhicule en fonction de ses caractéristiques techniques. 
+            L'application aide également à identifier les composantes principales influençant ces émissions.
+
+            **Avantages pour les constructeurs :**
+            Les constructeurs peuvent ainsi mieux répondre aux enjeux environnementaux, réduire leur impact économique (taxes écologiques), et rester compétitifs en adoptant des solutions innovantes et durables.
+
+            **Perspectives futures :**
+            L'outil peut être étendu à différents types de véhicules et pourrait intégrer de nouvelles fonctionnalités pour répondre aux évolutions du marché et aux futures exigences réglementaires.
+
+            **Limites et améliorations :**
+            L'outil se concentre uniquement sur les émissions de CO₂, mais pourrait intégrer les nanoparticules, un facteur également important dans la pollution de l'environnement.
+
+            **Conclusion :**
+            En anticipant les normes futures et en adoptant des technologies de pointe, notre outil permet aux constructeurs de réduire leur empreinte carbone tout en se positionnant comme des leaders dans l'innovation verte.\n
+            **L'onglet Démo permet de visualiser concrètement les prédictions d'émissions de CO₂ en fonction des caractéristiques des véhicules.**
+            """
+        )
