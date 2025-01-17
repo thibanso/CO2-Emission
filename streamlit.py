@@ -83,7 +83,14 @@ if page == pages[0]: #Contexte
     st.title("Prédictions d'émission de CO₂")
     st.divider()
 
-    st.image('image/image_intro.webp', width = 400, use_container_width=1 )
+    st.markdown(
+"""
+<div style="text-align: center;">
+    <img src="image/image_intro.webp" width="400">
+</div>
+""", 
+unsafe_allow_html=True
+)
     st.write("### Introduction")
     st.write("""Le dioxyde de carbone, communément appelé CO2, est un composant vital de notre atmosphère qui
 joue un rôle essentiel dans le soutien de la vie sur Terre. Cependant, au fil des ans, les activités
