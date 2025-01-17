@@ -83,13 +83,13 @@ if page == pages[0]: #Contexte
     st.title("Prédictions d'émission de CO₂")
     st.divider()
 
-    st.markdown(
-"""
-<div style="text-align: center;">
-    <img src="image/image_intro.webp" width="400">
-</div>
-""", 
-unsafe_allow_html=True
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="image/image_intro.webp" width="400" alt="Image Intro">
+    </div>
+    """, 
+    unsafe_allow_html=True
 )
     st.write("### Introduction")
     st.write("""Le dioxyde de carbone, communément appelé CO2, est un composant vital de notre atmosphère qui
