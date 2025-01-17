@@ -68,31 +68,18 @@ for member in members:
 #endregion
 #endregion
 
-if page == pages[0]:  # Contexte
+if page == pages[0]: #Contexte
     
     st.markdown(
     """
-    <div style="text-align: center;">
+    <div style="text-align: right;">
         <a href="https://datascientest.com" target="_blank">
             <img src="https://cdn.cookielaw.org/logos/08311578-d3d8-46d7-b6a2-30d80a44185a/56ecc322-2e5c-4e76-aa3b-cb09756551bc/32c1ae27-5e01-4d0e-88f0-963c0342ec9a/logo-2021.png" alt="Logo" width="250">
         </a>
     </div>
     """,
     unsafe_allow_html=True
-    )
-
-    st.title("Prédictions d'émission de CO₂")
-    st.divider()
-
-    # Centrer l'image
-    st.markdown(
-    """
-    <div style="text-align: center;">
-        <img src="image/image_intro.webp" width="400">
-    </div>
-    """, 
-    unsafe_allow_html=True
-    )
+)
     st.title("Prédictions d'émission de CO₂")
     st.divider()
 
