@@ -68,7 +68,7 @@ for member in members:
 #endregion
 #endregion
 
-if page == pages[0]: #Contexte
+if page == pages[0]:  # Contexte
     
     st.markdown(
     """
@@ -79,7 +79,20 @@ if page == pages[0]: #Contexte
     </div>
     """,
     unsafe_allow_html=True
-)
+    )
+
+    st.title("Prédictions d'émission de CO₂")
+    st.divider()
+
+    # Centrer l'image
+    st.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="image/image_intro.webp" width="400">
+    </div>
+    """, 
+    unsafe_allow_html=True
+    )
     st.title("Prédictions d'émission de CO₂")
     st.divider()
 
