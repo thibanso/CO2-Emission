@@ -83,7 +83,7 @@ if page == pages[0]: #Contexte
     st.title("Prédictions d'émission de CO₂")
     st.divider()
 
-st.markdown(
+    st.markdown(
     """
     <style>
     .center-image {
