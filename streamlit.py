@@ -96,9 +96,10 @@ if page == pages[0]: #Contexte
     <div class="center-image">
         <img src="image/image_intro.webp" width="400" />
     </div>
-    """, 
+    """,
     unsafe_allow_html=True
 )
+
 
 
     st.write("### Introduction")
