@@ -578,7 +578,7 @@ if page == pages[5]: #Modélisation
         st.dataframe(df_opti2, use_container_width=True)
         #endregion
     
-    with regtab:
+    with classtab:
         st.subheader("5.3 Modèle de classification")
         st.markdown("""Malgré les très bons résultats de notre modèle de régression, nous avons voulu tenter d'améliorer la performance de notre modèle avec des modèles de classification.
                     L'idée est donc de convertir la variable cible en un label, correspondant aux étiquettes de CO2 des véhicules.""")
