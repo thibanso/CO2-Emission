@@ -518,7 +518,7 @@ if page == pages[5]: #Modélisation
     #Titre de la page
     st.header("5 - Modélisation")
     st.divider()
-    regtab, classtab = st.tabs(["Régression", "Classfication"])
+    regtab, classtab = st.tabs(["**Régression**", "**Classfication**"])
     with regtab:
         st.subheader("5.1 Modèles de régression")
         
