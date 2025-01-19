@@ -80,11 +80,11 @@ if page == pages[0]: #Contexte
     """,
     unsafe_allow_html=True
 )
+    st.divider()
     st.title("Prédictions d'émission de CO₂")
     st.divider()
 
-    st.image('image/image_intro.webp', width = 400, use_container_width=1)
-
+    st.image('image/image_intro.webp', width = 400, use_container_width=1 )
     st.write("### Introduction")
     st.write("""Le dioxyde de carbone, communément appelé CO2, est un composant vital de notre atmosphère qui
 joue un rôle essentiel dans le soutien de la vie sur Terre. Cependant, au fil des ans, les activités
@@ -239,7 +239,7 @@ df_eu['Ft'] = df_eu['Ft'].str.lower()
 
 #Création d'une nouvelle colonne plus détaillées pour le type de moteur
 #qui synthétise Ft (fuel type) et Fm (fuel mode)
-#Au final il y a donc 10 catégories
+#Au final il y a donc 12 catégories
 df_eu['fuel_type'] = ''
 df_eu.loc[(df_eu['Ft']=='petrol')&(df_eu['Fm']=='H'), 'fuel_type'] = 'PHNR' 
 df_eu.loc[(df_eu['Ft']=='petrol')&(df_eu['Fm']=='M'), 'fuel_type'] = 'P' 
@@ -359,7 +359,7 @@ if page == pages[3]:  #Data Visualisation
     
     # Charger les données une seule fois
     data_cleaned = load_data()
-    st.header("3 - Modélisation")
+    st.header("3 - Data visualisation")
     st.divider()
 
     st.subheader("3.1 Distribution de la variable cible : Emissions CO2 (g/km)")
@@ -518,65 +518,173 @@ if page == pages[5]: #Modélisation
     #Titre de la page
     st.header("5 - Modélisation")
     st.divider()
-    #region regression
-    st.subheader("5.1 Modèles de régression")
+    regtab, classtab = st.tabs(["Régression", "Classfication"])
+    with regtab:
+        st.subheader("5.1 Modèles de régression")
+        
+        #Option pour les modèles et les métriques
+        regression_model_option = ["Régression Linéaire","Arbre de décision","Forêt aléatoire","XGB Regressor"]
+        regression_metric_option = ["Score Train","R²","MAE","MSE","RMSE"]
+
+        #Sélection par l'utilisateur du contenu à afficher
+        model_selection = st.pills("Modèle(s)", regression_model_option, selection_mode="multi")
+        metric_selection = st.pills("Métrique(s)", regression_metric_option, selection_mode="multi")
+        
+        #Chargement du fichier
+        df = pd.read_excel('tableau.xlsx', sheet_name='regression')
+
+        if model_selection and metric_selection:
+            # Filtrer les modèles choisis
+            df_filtered = df[df["Modèle"].isin(model_selection)]
+
+            # Garder uniquement les colonnes sélectionnées
+            columns_to_display = ["Modèle"] + metric_selection
+            df_display = df_filtered[columns_to_display]
+
+            # Arrondir les résultats numériques à deux chiffres après la virgule
+            df_display = df_display.round(2)
+
+            # Afficher le tableau filtré
+            st.write("### Résultats :")
+            st.dataframe(df_display, use_container_width=True)
+
+        st.subheader("5.2 Optimisation du modèle de Régression")
+        st.markdown("""GridSearchCv est une technique utilisée en apprentissage automatique pour optimiser les hyper paramètres d'un modèle. Nous allons donc chercher les meilleurs hyperparamètres permettant d’améliorer les performances de notre modèle Random Forest.
+
+    Cela nous donne les résultats suivants : """)
+        st.code("""Meilleurs paramètres : {
+        'max_depth': 30, #Profondeur maximale des arbres
+        'max_features': 'sqrt', #Combien de caractéristiques sont prises en compte à chaque noeud
+        'min_samples_leaf': 1, #Nombre minimal d'échantillon dans une feuille terminal
+        'min_samples_split': 10, #Nombre minimal d'échantillon pour la division d'un noeud
+        'n_estimators': 300 #Nombre d'arbres dans la forêt
+        }
+    """)
+        st.markdown("""Cette optimisation permet d'améliorer le modèle :""")
+        df_opti = df.loc[(df['MSE']==198.22)|(df['MSE']==173.70)]
+        st.dataframe(df_opti, use_container_width=True)
+        
+        st.markdown("""Nous avons ensuite étudié les résidus, c'est à dire la différence entre les valeurs réelles et les valeurs prédites. 
+                    Plus une valeur est proche de l'axe centrale, plus le modèle l'a bien prédite. """)
+        st.image('image/residu.png')
+        st.markdown("""On observe une ligne au niveau du 112 g/km qui pose problème. 
+                    Nous revenons donc au niveau du nettoyage des données et nous supprimons les lignes pour lequelles la colonne Ewltp (g/km) vaut 112.""")
+        st.code("df_eu = df_eu.drop(df_eu[df_eu['Ewltp (g/km)']==112].index)")
+        st.markdown("""De plus, on remarque que beaucoup de valeurs 'faibles' sont mals prédites. Ainsi, nous augmentons le seuil (fixé précédemment à 15g/km) à 35g/km. """)
+        st.code("""df_eu = df_eu.drop(df_eu[df_eu['Ewltp (g/km)'] <=35].index)""")
+        
+        st.markdown("A la fin de toutes ces étapes, nous pouvons observer le résultat final avec les différentes améliorations.")
+        df_opti2 = df.loc[(df['MSE']==198.22)|(df['MSE']==173.70)|(df['MSE']==79.78)]
+        st.dataframe(df_opti2, use_container_width=True)
+        #endregion
     
-    #Option pour les modèles et les métriques
-    regression_model_option = ["Régression Linéaire","Arbre de décision","Forêt aléatoire","XGB Regressor"]
-    regression_metric_option = ["Score Train","R²","MAE","MSE","RMSE"]
+    with classtab:
+        st.subheader("5.3 Modèle de classification")
+        st.markdown("""Malgré les très bons résultats de notre modèle de régression, nous avons voulu tenter d'améliorer la performance de notre modèle avec des modèles de classification.
+                    L'idée est donc de convertir la variable cible en un label, correspondant aux étiquettes de CO2 des véhicules.""")
+        st.image('image/etiquette_CO2.png', width=250)
+        st.markdown("""Nous procédons donc à la transformation de la variable cible :""")
+        st.code(""" #Conversion en DataFrame
+y_train_lab = pd.DataFrame(y_train, columns=['Ewltp (g/km)'])
+y_test_lab = pd.DataFrame(y_test, columns=['Ewltp (g/km)'])
 
-    #Sélection par l'utilisateur du contenu à afficher
-    model_selection = st.pills("Modèle(s)", regression_model_option, selection_mode="multi")
-    metric_selection = st.pills("Métrique(s)", regression_metric_option, selection_mode="multi")
-    
-    #Chargement du fichier
-    df = pd.read_excel('tableau.xlsx', sheet_name='regression')
+#Création de la fonction d'assignation des labels
+def labels(x):
+    if x < 101:
+        return 'A'
+    elif x <= 121:
+        return 'B'
+    elif x <= 141:
+        return 'C'
+    elif x <= 161:
+        return 'D'
+    elif x <= 201:
+        return 'E'
+    elif x <= 251:
+        return 'F'
+    else:
+        return 'G'
 
-    if model_selection and metric_selection:
-        # Filtrer les modèles choisis
-        df_filtered = df[df["Modèle"].isin(model_selection)]
+#Création d'une nouvelle colonne contenant les labels        
+y_train_lab['label']= y_train_lab['Ewltp (g/km)'].apply(labels)
+y_test_lab['label'] = y_test_lab['Ewltp (g/km)'].apply(labels)
 
-        # Garder uniquement les colonnes sélectionnées
-        columns_to_display = ["Modèle"] + metric_selection
-        df_display = df_filtered[columns_to_display]
+#Supression des valeurs numériques
+y_train_lab = y_train_lab['label']
+y_test_lab = y_test_lab['label']
 
-        # Arrondir les résultats numériques à deux chiffres après la virgule
-        df_display = df_display.round(2)
-
-        # Afficher le tableau filtré
-        st.write("### Résultats :")
-        st.dataframe(df_display, use_container_width=True)
-
-    st.subheader("5.2 Optimisation du modèle de Régression")
-    st.markdown("""GridSearchCv est une technique utilisée en apprentissage automatique pour optimiser les hyper paramètres d'un modèle. Nous allons donc chercher les meilleurs hyperparamètres permettant d’améliorer les performances de notre modèle Random Forest.
-
-Cela nous donne les résultats suivants : """)
-    st.code("""Meilleurs paramètres : {
-    'max_depth': 30, #Profondeur maximale des arbres
-    'max_features': 'sqrt', #Combien de caractéristiques sont prises en compte à chaque noeud
-    'min_samples_leaf': 1, #Nombre minimal d'échantillon dans une feuille terminal
-    'min_samples_split': 10, #Nombre minimal d'échantillon pour la division d'un noeud
-    'n_estimators': 300 #Nombre d'arbres dans la forêt
-    }
 """)
-    st.markdown("""Cette optimisation permet d'améliorer le modèle :""")
-    df_opti = df.loc[(df['MSE']==198.22)|(df['MSE']==173.70)]
-    st.dataframe(df_opti, use_container_width=True)
+        st.markdown("""Puis à l'encodage : """)
+        st.code("""from sklearn.preprocessing import LabelEncoder
+
+#Encodage de la variable cible avec LabelEncoder
+le = LabelEncoder()
+y_train_lab = le.fit_transform(y_train_lab)
+y_test_lab = le.transform(y_test_lab)""")
+        df_class = pd.read_excel('tableau.xlsx', sheet_name='confusion')
+        classification = st.radio("Modèle de classification :",["Régression Logistique", "Arbre de décision", "Forêt aléatoire","XGBoost Classifier"])
+        if classification=="Régression Logistique":
+            df_filtre = df_class.iloc[0:7]
+        elif classification=="Arbre de décision":
+            df_filtre =df_class.iloc[9:16]
+        elif classification=="Forêt aléatoire":
+            df_filtre =df_class.iloc[18:25]
+        else :
+            df_filtre =df_class.iloc[27:34]
+            
+        if not df_filtre.empty:
+            st.table(df_filtre.reset_index(drop=True))  
+        
+        st.markdown("""Les résultats des modèles de classification : """)
+        result_class = pd.read_excel('tableau.xlsx',sheet_name='classification')
+        st.dataframe(result_class)
+        
+        st.subheader("""5.4 Optimisation des modèles de classification""")
+        st.markdown("""L'utilisation de GridSearch nous a permis d'améliorer la performance de notre modèle de classfication, mais cela reste toujours bien en dessous de notre modèle de régression.""")
+        st.dataframe(result_class.iloc[4:5])
+        
+if page == pages[6]:  #Conclusion
+    st.header("6 - Conclusion")
+    st.divider() 
     
-    st.markdown("""Nous avons ensuite étudié les résidus, c'est à dire la différence entre les valeurs réelles et les valeurs prédites. 
-                Plus une valeur est proche de l'axe centrale, plus le modèle l'a bien prédite. """)
-    st.image('image/residu.png')
-    st.markdown("""On observe une ligne au niveau du 112 g/km qui pose problème. 
-                Nous revenons donc au niveau du nettoyage des données et nous supprimons les lignes pour lequelles la colonne Ewltp (g/km) vaut 112.""")
-    st.code("df_eu = df_eu.drop(df_eu[df_eu['Ewltp (g/km)']==112].index)")
-    st.markdown("""De plus, on remarque que beaucoup de valeurs 'faibles' sont mals prédites. Ainsi, nous augmentons le seuil (fixé précédemment à 15g/km) à 35g/km. """)
-    st.code("""df_eu = df_eu.drop(df_eu[df_eu['Ewltp (g/km)'] <=35].index)""")
-    
-    st.markdown("A la fin de toutes ces étapes, nous pouvons observer le résultat final avec les différentes améliorations.")
-    df_opti2 = df.loc[(df['MSE']==198.22)|(df['MSE']==173.70)|(df['MSE']==79.78)]
-    st.dataframe(df_opti2, use_container_width=True)
-    #endregion
-    
+    # Regroupement des trois premières parties sous forme de résumé
+    with st.expander("**1. Gestion et exploration des données**"):
+        st.write(
+            """
+            Nous avons rencontré plusieurs défis liés à la gestion et à la compréhension des données. 
+            Le volume important du fichier initial (plus de 2 Go) a nécessité la mise en place de solutions efficaces pour le traitement et le partage des données.  
+            Lors de l'exploration du dataset, des difficultés techniques et conceptuelles ont émergées, notamment sur les technologies de réduction des émissions de CO₂, 
+            mais cela a enrichi nos connaissances dans le domaine automobile. Enfin, un nettoyage approfondi a été effectué, avec la suppression de 15 colonnes 
+            non pertinentes ou vides, rendant le dataset plus clair et adapté à nos analyses.
+            """
+        )
+    # Difficultés avec GridSearch
+    with st.expander("**2. Difficulté à utiliser GridSearch**"):
+        st.write(
+            """
+            L’optimisation des modèles via GridSearch a posé des défis en raison de ses fortes exigences en mémoire et en calcul. 
+            Cependant, nous avons surmonté ces limitations en obtenant des résultats probants, tout en apprenant à gérer 
+            des processus gourmands en ressources de manière plus efficace.
+            """
+        )
+    # Résumé des Objectifs et Perspectives
+    with st.expander("**3. Objectifs et perspectives futures**"):
+        st.write(
+            """
+            **Objectifs du projet :**
+            Notre outil a pour but de permettre aux constructeurs automobiles de prédire les émissions de CO₂ d'un véhicule en fonction de ses caractéristiques techniques. 
+            L'application aide également à identifier les composantes principales influençant ces émissions.
+            **Avantages pour les constructeurs :**
+            Les constructeurs peuvent ainsi mieux répondre aux enjeux environnementaux, réduire leur impact économique (taxes écologiques), et rester compétitifs en adoptant des solutions innovantes et durables.
+            **Perspectives futures :**
+            L'outil peut être étendu à différents types de véhicules et pourrait intégrer de nouvelles fonctionnalités pour répondre aux évolutions du marché et aux futures exigences réglementaires.
+            **Limites et améliorations :**
+            L'outil se concentre uniquement sur les émissions de CO₂, mais pourrait intégrer les nanoparticules, un facteur également important dans la pollution de l'environnement.
+            **Conclusion :**
+            En anticipant les normes futures et en adoptant des technologies de pointe, notre outil permet aux constructeurs de réduire leur empreinte carbone tout en se positionnant comme des leaders dans l'innovation verte.\n
+            **L'onglet Démo permet de visualiser concrètement les prédictions d'émissions de CO₂ en fonction des caractéristiques des véhicules.**
+            """
+        )
     
 if page == pages[7]: #Démo
     #region Titre formulaire
@@ -602,10 +710,8 @@ if page == pages[7]: #Démo
 
     #region Formulaire
     with st.form(key='prediction_form'):
-        #category = st.selectbox("Catégorie de véhicule",('Tourisme','Utilitaire'),index=None,placeholder="Selectionner la catégorie de véhicule")
-        category = st.segmented_control(label= 'Catégorie', options=['Tourisme','Utilitaire'])
+        category = st.segmented_control(label= 'Catégorie', options=['Tourisme','Véhicule tout-terrain'])
         masse = st.number_input("Poids du véhicule (en Kg)",min_value=500.0, max_value= 5000.0, value = 1500.0, step=50.0)
-        #fuel = st.selectbox("Motorisation",['Essence','Diesel','Essence hybride non-rechargeable','Essence hybride rechargeable','Diesel hybride rechargeable','Diesel hybride rechargeable','GPL','Gaz naturel','E85 non-rechargeable','E85 FlexiFuel'], index=None, placeholder='Sélectionner la motorisation')
         fuel = st.segmented_control(label="Motorisation",options=['Essence','Diesel','Essence hybride non-rechargeable','Essence hybride rechargeable','Diesel hybride rechargeable','Diesel hybride rechargeable','GPL','Gaz naturel','E85 non-rechargeable','E85 FlexiFuel'])
 
         autonomie_electrique = st.number_input("Autonomie électrique (km)", min_value=0.0, max_value=700.0, value=0.0, step=5.0)
@@ -657,7 +763,7 @@ if page == pages[7]: #Démo
     if submit_button:
         # Transformation des données pour correspondre aux colonnes du modèle
         data = {
-            "Ct_M1G": 1 if category == "Utilitaire" else 0,  # Exemple de transformation binaire
+            "Ct_M1G": 1 if category == "Véhicule tout-terrain" else 0,  # Exemple de transformation binaire
             "fuel_type_DHNR": 1 if fuel == "Diesel hybride non-rechargeable" else 0,
             "fuel_type_DHR": 1 if fuel == "Diesel hybride rechargeable" else 0,
             "fuel_type_E85F": 1 if fuel == "E85 FlexiFuel" else 0,
@@ -722,51 +828,3 @@ if page == pages[7]: #Démo
             )
     st.image('image/etiquette_CO2.png')
     #endregion
-
-if page == pages[6]:  # Vérification si la page actuelle est la 6e (Conclusion)
-    st.title("Apprentissages et difficultés du projet") 
-    
-    # Regroupement des trois premières parties sous forme de résumé
-    with st.expander("**1. Gestion et exploration des données**"):
-        st.write(
-            """
-            Nous avons rencontré plusieurs défis liés à la gestion et à la compréhension des données. 
-            Le volume important du fichier initial (plus de 2 Go) a nécessité la mise en place de solutions efficaces pour le traitement et le partage des données.  
-            Lors de l'exploration du dataset, des difficultés techniques et conceptuelles ont émergé, notamment sur les technologies de réduction des émissions de CO₂, 
-            mais cela a enrichi nos connaissances dans le domaine automobile. Enfin, un nettoyage approfondi a été effectué, avec la suppression de 15 colonnes 
-            non pertinentes ou vides, rendant le dataset plus clair et adapté à nos analyses.
-            """
-        )
-
-    # Difficultés avec GridSearch
-    with st.expander("**2. Difficulté à utiliser GridSearch**"):
-        st.write(
-            """
-            L’optimisation des modèles via GridSearch a posé des défis en raison de ses fortes exigences en mémoire et en calcul. 
-            Cependant, nous avons surmonté ces limitations en obtenant des résultats probants, tout en apprenant à gérer 
-            des processus gourmands en ressources de manière plus efficace.
-            """
-        )
-
-    # Résumé des Objectifs et Perspectives
-    with st.expander("**3. Objectifs et perspectives futures**"):
-        st.write(
-            """
-            **Objectifs du projet :**
-            Notre outil a pour but de permettre aux constructeurs automobiles de prédire les émissions de CO₂ d'un véhicule en fonction de ses caractéristiques techniques. 
-            L'application aide également à identifier les composantes principales influençant ces émissions.
-
-            **Avantages pour les constructeurs :**
-            Les constructeurs peuvent ainsi mieux répondre aux enjeux environnementaux, réduire leur impact économique (taxes écologiques), et rester compétitifs en adoptant des solutions innovantes et durables.
-
-            **Perspectives futures :**
-            L'outil peut être étendu à différents types de véhicules et pourrait intégrer de nouvelles fonctionnalités pour répondre aux évolutions du marché et aux futures exigences réglementaires.
-
-            **Limites et améliorations :**
-            L'outil se concentre uniquement sur les émissions de CO₂, mais pourrait intégrer les nanoparticules, un facteur également important dans la pollution de l'environnement.
-
-            **Conclusion :**
-            En anticipant les normes futures et en adoptant des technologies de pointe, notre outil permet aux constructeurs de réduire leur empreinte carbone tout en se positionnant comme des leaders dans l'innovation verte.\n
-            **L'onglet Démo permet de visualiser concrètement les prédictions d'émissions de CO₂ en fonction des caractéristiques des véhicules.**
-            """
-        )
