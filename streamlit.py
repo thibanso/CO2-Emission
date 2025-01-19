@@ -43,16 +43,10 @@ st.markdown(
 
 #region members
 # Sidebar title
-st.sidebar.title("Membres du projet :")
+st.sidebar.title("Owner du projet :")
 
 # Liste des membres avec leurs liens GitHub et LinkedIn
 members = [
-    {"name": "Antoine BARBIER",
-    "github": "https://github.com/Antoine-DA",
-    "linkedin": "https://www.linkedin.com/in/antoine-barbier-83654415b/"},
-    {"name": "Flora BREN",
-    "github": "https://github.com/flora-br",
-    "linkedin": "https://www.linkedin.com/in/flora-b-68a80013a"},
     {"name": "Thibault EL MANSOURI",
     "github": "https://github.com/thibanso",
     "linkedin": "https://www.linkedin.com/in/el-mansouri-299932130/"},
