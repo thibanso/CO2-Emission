@@ -166,8 +166,8 @@ if page == pages[1]: #Cadre analyse des données
         Il a été renommé df_eu pour la première partie d’observation du fichier.
 
         Il contient les informations suivantes :""" % url)
-        
-        st.dataframe(df)
+        df2=pd.read_excel('tableau.xlsx', sheet_name='df_eu')
+        st.dataframe(df2)
     st.markdown("""
     Les deux fichiers contiennent des informations intéressantes et utiles pour alimenter le sujet.
 
