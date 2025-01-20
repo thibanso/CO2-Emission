@@ -451,7 +451,7 @@ if page == pages[3]:  #Data Visualisation
     elif axe_x == 'Fuel consumption ':  # Consommation de carburant
         st.markdown("""
         *Ce graphique montre la relation entre la consommation de carburant (en litres aux 100 km) et les émissions de CO2.* 
-        *Nous observons un lien entre la consommation de carburant et les émissions de CO2. Lorsque la consommation augmente, les émissions tendent également à augmenter.* 
+        *Lorsque la consommation augmente, les émissions tendent également à augmenter.* 
         *Nous pouvons supposer qu’une plus grande consommation entraîne une combustion accrue de carburant, entraînant plus d'émissions de CO2.*
         """)
 
