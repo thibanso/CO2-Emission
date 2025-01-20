@@ -721,26 +721,6 @@ if page == pages[7]: #Démo
         consommation = st.number_input("Consommation du moteur (l/100)",min_value=0.0, max_value=30.0, value=6.0, step=0.1)
         
         submit_button = st.form_submit_button(label="**Prédire**")
-        st.markdown("""
-    <style>
-        .stButton>button {
-            font-weight: bold;
-            background-color: #4CAF50;  /* Vert sympa */
-            color: white;
-            font-size: 16px;
-            border: none;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;  /* Vert foncé au survol */
-        }
-    </style>
-""", unsafe_allow_html=True)
         
     #endregion
     
