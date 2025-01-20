@@ -637,7 +637,7 @@ y_test_lab = le.transform(y_test_lab)""")
         
         st.markdown("""Les résultats des modèles de classification : """)
         result_class = pd.read_excel('tableau.xlsx',sheet_name='classification')
-        st.dataframe(result_class)
+        st.dataframe(result_class.iloc[0:4])
         
         st.subheader("""5.4 Optimisation des modèles de classification""")
         st.markdown("""L'utilisation de GridSearch nous a permis d'améliorer la performance de notre modèle de classfication, mais cela reste toujours bien en dessous de notre modèle de régression.""")
