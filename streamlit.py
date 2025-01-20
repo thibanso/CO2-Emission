@@ -720,7 +720,8 @@ if page == pages[7]: #Démo
         reduc_emission = st.number_input("Technologie de réduction d'émission (g/km)",min_value=0.0, max_value=10.0, value=0.0, step = 0.1)
         consommation = st.number_input("Consommation du moteur (l/100)",min_value=0.0, max_value=30.0, value=6.0, step=0.1)
         
-        submit_button = st.form_submit_button(label="Prédire")
+        submit_button = st.form_submit_button(label="**Prédire**")
+        
     #endregion
     
     #region encodage, chargement du fichier
