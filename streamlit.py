@@ -553,7 +553,7 @@ y_test_lab = le.transform(y_test_lab)""")
 if page == pages[6]:  #Synthèse
     st.header("6 - Synthèse")
     st.divider()
-    with st.expander("""6.1 Limites et suites du projet"""):
+    with st.expander("""**6.1 Limites et suites du projet**"""):
         st.write("""
 #### Les limites du projet
 - Jeu de données se concentre uniquement sur les émissions de CO₂, excluant d'autres gaz à effet de serre comme les oxydes d'azotes(Nox).
@@ -567,14 +567,14 @@ if page == pages[6]:  #Synthèse
 - Enrichir le jeu de données avec des caractéristiques techniques ou technologiques complémentaires.
 - Ajouter de nouvelles données via le Webscrapping sur les sites des constructeurs automobiles.
 - Prendre le temps de mieux trier les valeurs aberrantes du jeu de données.""")
-    with st.expander("""6.2 Les difficultés du projet"""):
+    with st.expander("**6.2 Les difficultés du projet**"):
         st.write("""
 #### Les difficultés du projet
 - Volumétrie du jeu de données : Fichier de plus de 2 Go, nécessitant des solutions pour que chaque membre du projet puisse y accéder.
 - Compréhension du jeu de données : Difficultés liées à la compréhension des subtilités techniques et des spécificités des données.
 - Nombres de colonnes inutilisables : Suppression de 15 colonnes inutilisables ou non pertinentes.
 - Utilisation de GridSearch : Difficultés dues à la gourmandise en ressources de l'outil, nécessitant une grande quantité de mémoire et de puissance de calcul.""")
-    with st.expander("""6.3 Conclusion"""):
+    with st.expander("**6.3 Conclusion**"):
         st.write("""
 #### Conclusion
 - Objectif initial : Proposer un outil pour les constructeurs automobiles pour :
