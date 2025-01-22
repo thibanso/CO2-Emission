@@ -47,7 +47,7 @@ st.sidebar.title("Owner du projet :")
 
 # Liste des membres avec leurs liens GitHub et LinkedIn
 members = [
-    {"name": "T.A. EL MANSOURI",
+    {"name": "T. EL MANSOURI",
     "github": "https://github.com/thibanso",
     "linkedin": "https://www.linkedin.com/in/el-mansouri-299932130/"},
 ]
