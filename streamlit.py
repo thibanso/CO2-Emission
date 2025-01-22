@@ -550,39 +550,48 @@ y_test_lab = le.transform(y_test_lab)""")
         st.markdown("""L'utilisation de GridSearch nous a permis d'améliorer la performance de notre modèle de classfication, mais cela reste toujours bien en dessous de notre modèle de régression.""")
         st.dataframe(result_class.iloc[4:5])
         
-if page == pages[6]:  #Synthèse
-    st.header("6 - Synthèse")
-    st.divider()
-    with st.expander("""**6.1 Limites et suites du projet**"""):
-        st.write("""
-#### Les limites du projet
-- Jeu de données se concentre uniquement sur les émissions de CO₂, excluant d'autres gaz à effet de serre comme les oxydes d'azotes(Nox).
-- Autres caractéristiques techniques non prises en compte :
-  - Type de boîte de vitesse et nombre de rapports.
-  - Régulateur de vitesse.
-  - Type de climatisation.
-  - Usage du véhicule (type de conduite, conditions de conduite, conditions météorologiques).
-  - Poids du véhicule selon le taux de remplissage.
-#### Les suites du projet
-- Enrichir le jeu de données avec des caractéristiques techniques ou technologiques complémentaires.
-- Ajouter de nouvelles données via le Webscrapping sur les sites des constructeurs automobiles.
-- Prendre le temps de mieux trier les valeurs aberrantes du jeu de données.""")
-    with st.expander("**6.2 Les difficultés du projet**"):
-        st.write("""
-#### Les difficultés du projet
-- Volumétrie du jeu de données : Fichier de plus de 2 Go, nécessitant des solutions pour que chaque membre du projet puisse y accéder.
-- Compréhension du jeu de données : Difficultés liées à la compréhension des subtilités techniques et des spécificités des données.
-- Nombres de colonnes inutilisables : Suppression de 15 colonnes inutilisables ou non pertinentes.
-- Utilisation de GridSearch : Difficultés dues à la gourmandise en ressources de l'outil, nécessitant une grande quantité de mémoire et de puissance de calcul.""")
-    with st.expander("**6.3 Conclusion**"):
-        st.write("""
-#### Conclusion
-- Objectif initial : Proposer un outil pour les constructeurs automobiles pour :
-  - Projeter les émissions de CO₂ d'un futur véhicule.
-- Perspectives futures :
-  - Intégrer de nouvelles fonctionnalités.
-  - Expansion à d'autres types de véhicules.
-""")
+if page == pages[6]:  #Conclusion
+    st.header("6 - Conclusion")
+    st.divider() 
+    
+    # Regroupement des trois premières parties sous forme de résumé
+    with st.expander("**1. Gestion et exploration des données**"):
+        st.write(
+            """
+            Nous avons rencontré plusieurs défis liés à la gestion et à la compréhension des données. 
+            Le volume important du fichier initial (plus de 2 Go) a nécessité la mise en place de solutions efficaces pour le traitement et le partage des données.  
+            Lors de l'exploration du dataset, des difficultés techniques et conceptuelles ont émergées, notamment sur les technologies de réduction des émissions de CO₂, 
+            mais cela a enrichi nos connaissances dans le domaine automobile. Enfin, un nettoyage approfondi a été effectué, avec la suppression de 15 colonnes 
+            non pertinentes ou vides, rendant le dataset plus clair et adapté à nos analyses.
+            """
+        )
+    # Difficultés avec GridSearch
+    with st.expander("**2. Difficulté à utiliser GridSearch**"):
+        st.write(
+            """
+            L’optimisation des modèles via GridSearch a posé des défis en raison de ses fortes exigences en mémoire et en calcul. 
+            Cependant, nous avons surmonté ces limitations en obtenant des résultats probants, tout en apprenant à gérer 
+            des processus gourmands en ressources de manière plus efficace.
+            """
+        )
+    # Résumé des Objectifs et Perspectives
+    with st.expander("**3. Objectifs et perspectives futures**"):
+        st.write(
+            """
+            **Objectifs du projet :**
+            Notre outil a pour but de permettre aux constructeurs automobiles de prédire les émissions de CO₂ d'un véhicule en fonction de ses caractéristiques techniques. 
+            L'application aide également à identifier les composantes principales influençant ces émissions.
+            **Avantages pour les constructeurs :**
+            Les constructeurs peuvent ainsi mieux répondre aux enjeux environnementaux, réduire leur impact économique (taxes écologiques), et rester compétitifs en adoptant des solutions innovantes et durables.
+            **Perspectives futures :**
+            L'outil peut être étendu à différents types de véhicules et pourrait intégrer de nouvelles fonctionnalités pour répondre aux évolutions du marché et aux futures exigences réglementaires.
+            **Limites et améliorations :**
+            L'outil se concentre uniquement sur les émissions de CO₂, mais pourrait intégrer les nanoparticules, un facteur également important dans la pollution de l'environnement.
+            **Conclusion :**
+            En anticipant les normes futures et en adoptant des technologies de pointe, notre outil permet aux constructeurs de réduire leur empreinte carbone tout en se positionnant comme des leaders dans l'innovation verte.\n
+            **L'onglet Démo permet de visualiser concrètement les prédictions d'émissions de CO₂ en fonction des caractéristiques des véhicules.**
+            """
+        )
     
 if page == pages[7]: #Démo
     #region Titre formulaire
