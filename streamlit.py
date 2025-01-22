@@ -134,7 +134,7 @@ if page == pages[1]: #Cadre analyse des données
     st.divider()
 
     url = "https://www.data.gouv.fr/fr/datasets/emissions-de-co2-et-de-polluants-des-vehicules-commercialises-en-france/"
-    with st.expander('1.1 - Premier jeu de données'):
+    with st.expander('**1.1 - Premier jeu de données**'):
         st.markdown("""
         Le premier fichier porte sur les émissions de CO2, de polluants et les caractéristiques des véhicules 
         commercialisés en France relatif à l’année 2014. Ce fichier est disponible librement sur le site de
@@ -153,7 +153,7 @@ if page == pages[1]: #Cadre analyse des données
         df=pd.read_excel('tableau.xlsx', sheet_name='df_fr')
         st.dataframe(df)
     url = "https://www.eea.europa.eu/en/datahub/datahubitem-view/fa8b1229-3db6-495d-b18e-9c9b3267c02b"
-    with st.expander('2.2 - Deuxième jeu de données'):
+    with st.expander('**2.2 - Deuxième jeu de données**'):
         st.markdown("""
         Un second jeu de données porte sur les émissions de CO2 des véhicules produits en Europe relatif à
         l’année 2023. Ce fichier est disponible librement sur le site [European Environment Agency3](%s) et
