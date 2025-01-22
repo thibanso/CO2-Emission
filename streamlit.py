@@ -399,61 +399,27 @@ if page == pages[3]:  #Data Visualisation
 if page == pages[4]: #Pre-processing
     st.header('4 - Pré-processing')
     st.divider()
-    st.subheader("4.1 Création du jeu d'entraînement et du jeu de test")
-    st.markdown("""Une fois le jeu de données bien nettoyé, nous créons nos jeux d'entraînement et de test.
-Le jeu d'entraînement (X_train, y_train) représente 80% des données.
-Le jeu d'entraînement (X_test, y_test) représente 20% des données.""")
-    st.code("""feats = df_eu.drop(columns='Ewltp (g/km)')
-target = df_eu['Ewltp (g/km)']
-X_train, X_test, y_train, y_test = train_test_split(
-    feats, target, random_state = 41, test_size = 0.2)""")
-    
-    st.subheader("4.2 Gestion des valeurs manquantes")
-    st.markdown("""Pour les valeurs manquantes des colonnes m (kg), ec (cm3), ep (KW) et Fuel consumption, nous choisissons de les remplacer par la médiane, 
-qui est résistante aux valeurs extrêmes contenues dans certaines colonnes.""")
-    st.code("""#Gestion des valeurs manquantes
-imputer = SimpleImputer(missing_values=np.nan, strategy='median')
-num_col_NA = ['m (kg)','ec (cm3)','ep (KW)','Fuel consumption ']
-num_col = ['m (kg)','ec (cm3)','ep (KW)','Fuel consumption ','Electric range (km)','Erwltp (g/km)']
+    with st.expander("**4.1 Création du jeu d'entraînement et du jeu de test**"):
+        st.markdown("""Une fois le jeu de données bien nettoyé, nous créons nos jeux d'entraînement et de test.
+        Le jeu d'entraînement (X_train, y_train) représente 80% des données.
+        Le jeu d'entraînement (X_test, y_test) représente 20% des données.""")
 
-X_train.loc[:,num_col_NA] = imputer.fit_transform(X_train[num_col_NA])
-X_test.loc[:,num_col_NA] = imputer.transform(X_test[num_col_NA])""")
     
-    st.subheader("4.3  Encodage ")
-    st.markdown("""Pour l’encodage des variables catégorielles Ct et fuel_type, nous optons pour OneHotEncoder, car ces variables ne présentent pas de 
-relation d'ordre entre leurs différentes catégories.""")
-    st.code("""#Encodage des variables catégorielles
-oneh = OneHotEncoder(drop = 'first', sparse_output=False)
-cat_col = ['Ct','fuel_type']
-X_train_encoded = oneh.fit_transform(X_train[cat_col])
-X_test_encoded = oneh.transform(X_test[cat_col])
+    with st.expander("**4.2 Gestion des valeurs manquantes**"):
+        st.markdown("""Pour les valeurs manquantes des colonnes m (kg), ec (cm3), ep (KW) et Fuel consumption, nous choisissons de les remplacer par la médiane, 
+        qui est résistante aux valeurs extrêmes contenues dans certaines colonnes.""")
 
-#Conversion en DataFrame
-noms_colonnes_cat = oneh.get_feature_names_out(cat_col)
-X_train_encoded = pd.DataFrame(X_train_encoded, columns=noms_colonnes_cat, index = X_train.index)
-X_test_encoded = pd.DataFrame(X_test_encoded, columns=noms_colonnes_cat, index = X_test.index)""")
     
-    st.subheader("4.4  Standardisation")
-    st.markdown("""Enfin, pour la Standardisation, nous utilisons StandardScaler pour uniformiser les valeurs 
-des variables numériques afin de pouvoir entraîner des modèles de familles différentes.""")
-    st.code("""#Standardisation des variables numériques
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train[num_col])
-X_test_scaled = scaler.transform(X_test[num_col])
-
-#Conversion en DataFrame
-noms_colonnes_num = scaler.get_feature_names_out(num_col)
-X_train_scaled = pd.DataFrame(X_train_scaled, columns=noms_colonnes_num, index = X_train.index)
-X_test_scaled = pd.DataFrame(X_test_scaled, columns=noms_colonnes_num, index = X_test.index)""")
+    with st.expander("**4.3  Encodage**"):
+        st.markdown("""Pour l’encodage des variables catégorielles Ct et fuel_type, nous optons pour OneHotEncoder, car ces variables ne présentent pas de 
+        relation d'ordre entre leurs différentes catégories.""")
     
-    st.subheader("4.5 Reconstition de DataFrame")
-    st.markdown("""Enfin, nous reconstituons le DataFrame pour la modélisation.""")
-    st.code("""
-#Reconstition du tableau après encodage
-X_train.drop(columns=cat_col)
-X_test.drop(columns=cat_col)
-X_train = pd.concat([X_train_encoded,X_train_scaled], axis = 1)
-X_test = pd.concat([X_test_encoded,X_test_scaled], axis = 1)""")
+    with st.expander("**4.4  Standardisation**"):
+        st.markdown("""Enfin, pour la Standardisation, nous utilisons StandardScaler pour uniformiser les valeurs 
+        des variables numériques afin de pouvoir entraîner des modèles de familles différentes.""")
+    
+    with st.expander("**4.5 Reconstition de DataFrame**"):
+        st.markdown("""Enfin, nous reconstituons le DataFrame pour la modélisation.""")
 
 if page == pages[5]: #Modélisation
     #Titre de la page
