@@ -185,11 +185,11 @@ if page == pages[1]: #Cadre analyse des données
     """)
 
 if page == pages[2]: #Nettoyage des données
-    st.header('2 - Étapes du nettoyage de données :')
+    st.header('**2 - Étapes du nettoyage de données :**')
     st.divider()
 
 #region étape nettoyage
-    with st.expander('2.1 Suppression des colonnes vides'): #2.1
+    with st.expander('**2.1 Suppression des colonnes vides**'): #2.1
         st.markdown(""" 
 Nous avons dans un premier temps supprimé toutes les **colonnes vides**, colonnes qui contenaient
 toujours les mêmes valeurs, ou les colonnes qui n'apportent aucune information en rapport avec
@@ -200,14 +200,14 @@ Ernedc (g/km), De, Vf, Status, year, Date of registration. """)
 
 
         
-    with st.expander('2.2 Suppression des doublons avant nettoyage'): #2.2
+    with st.expander('**2.2 Suppression des doublons avant nettoyage**'): #2.2
         st.markdown("""Nous avons par la suite identifié et **supprimé les doublons** sur les colonnes restantes. Cela nous a
 permis de réduire drastiquement la taille de notre jeu de données.""")
         df = pd.DataFrame({'Nombre colonne':[39,27],'Nombre ligne':['10 734 656','1 804 116'],'Taille du fichier (Mo)':['2 450 Mo','388 Mo']}, index=['Tableau avant supression','Tableau après suppression'])
         df
     
         
-    with st.expander('2.3 Suppression des colonnes inutiles pour le modèle de Machine Learning'): #2.3
+    with st.expander('**2.3 Suppression des colonnes inutiles pour le modèle de Machine Learning**'): #2.3
         st.markdown("""Nous avons ensuite réalisé un tableau permettant d’identifier les colonnes qui nous seraient utiles ou non pour exploiter notre jeu de données.\n
 Pour rappel, l’objectif étant in fine d’établir un modèle permettant à un constructeur de renseigner les caractéristiques techniques d’un futur véhicule, et que celui-ci lui 
 retourne une prédiction sur les émissions de CO2, nous nous sommes, pour chaque colonne poser la question :\n
@@ -221,7 +221,7 @@ retourne une prédiction sur les émissions de CO2, nous nous sommes, pour chaqu
 """)
 
         
-    with st.expander("2.4.1 Création de colonnes 'intermédiaires'"): #2.4.1
+    with st.expander("**2.4.1 Création de colonnes 'intermédiaires'**"): #2.4.1
         st.markdown("""
                     Nous décidons de créer une nouvelle colonnes qui combine l'information des colonnes <span style="color : red;"><i>Fuel Type (Ft)</i></span> et <span style="color : red;"><i>Fuel Mode (Fm)</i></span>"""
                     ,unsafe_allow_html=True)
@@ -230,7 +230,7 @@ retourne une prédiction sur les émissions de CO2, nous nous sommes, pour chaqu
         
       
     
-    with st.expander('2.4.2 Les catégories de véhicules'):#2.4.2
+    with st.expander('**2.4.2 Les catégories de véhicules**'):#2.4.2
         st.markdown("""Nous avons deux colonnes <span style="color : red;"><i>Cr</i></span> et <span style="color : red;"><i>Ct</i></span> qui nous informe sur les catégories des véhicules suivantes :
 """, unsafe_allow_html=True)
         df=pd.read_excel('tableau.xlsx', sheet_name='categorie_vehicule')
@@ -245,7 +245,7 @@ De plus, nous supprimons Cr qui ne nous servira plus.
 """)
 
     
-    with st.expander('2.5 Suppression de lignes et de colonnes jugées non-pertinentes pour le modèle de machine learning') : #2.5
+    with st.expander('**2.5 Suppression de lignes et de colonnes jugées non-pertinentes pour le modèle de machine learning**') : #2.5
         st.markdown("""L’étape décrite en 2.4.1 nous a permis d’identifier des véhicules qui n’émettent pas de CO2.
 Cela représente les véhicules qui ont un moteur à **hydrogène** ou **électrique**. 
 Nous décidons donc de supprimer tous les véhicules qui ont un de ces deux types de moteur.\n
@@ -253,7 +253,7 @@ Nous décidons également de supprimer les colonnes <span style="color : red;"><
 """, unsafe_allow_html=True)
     
         
-    with st.expander('2.6 Remplacement des valeurs manquantes pour les véhicules non-hybrides'): #2.6
+    with st.expander('**2.6 Remplacement des valeurs manquantes pour les véhicules non-hybrides**'): #2.6
         st.markdown("""Les colonnes <span style="color : red;"><i>z (Wh/km)</i></span>, <span style="color : red;"><i>Electric range (km)</i></span> sont des colonnes qui donnent des informations sur la consommation électrique et l’autonomie en mode électrique des véhicules hybrides.
  
 Nous considérons que ce sont des **données intéressantes** pour notre modèle de Machine Learning.
@@ -266,12 +266,12 @@ Nous décidons également de remplacer ces valeurs manquantes par des 0.
 """, unsafe_allow_html=True)
     
         
-    with st.expander('2.7 Suppression des lignes dont la variable cible est manquante'): #2.7
+    with st.expander('**2.7 Suppression des lignes dont la variable cible est manquante**'): #2.7
         st.markdown("""Nous supprimons les lignes dont la variable cible <span style="color : red;"><i>Ewltp (g/km)</i></span> n'est pas renseignée. 
 """,unsafe_allow_html=True)
     
     
-    with st.expander("""2.8 Réduction de dimension pour la variable cible"""): #2.8
+    with st.expander("**2.8 Réduction de dimension pour la variable cible**"): #2.8
         st.markdown("""Après ces premières étapes, nous remarquons que certains véhicules ont des émissions de CO2 relativement faibles (< 10 g/km).
 
 Après vérification de certains modèles sur Internet, nous doutons de la fiabilité des données contenues dans la colonne <span style="color : red;"><i>Ewltp (g/km)</i></span>.
@@ -282,7 +282,7 @@ Ce seuil a été fixé à 15 g/km
 """,unsafe_allow_html=True)
     
      
-    with st.expander('2.9 Identification des problèmes de multi-colinéarité'): #2.9
+    with st.expander('**2.9 Identification des problèmes de multi-colinéarité**'): #2.9
         st.markdown("""Nous souhaitons maintenant nous intéresser au problème de multicolinéarité.""")
         st.image('image/heatmap.png')
         st.markdown("""Cette matrice, nous permet d’identifier deux multi-colinéarités :
@@ -290,7 +290,7 @@ Ce seuil a été fixé à 15 g/km
 - Entre <span style="color : red;"><i>Electric range (km)</i></span> et <span style="color : red;"><i>z (Wh/km)</i></span> (𝑟 = 0.93)""", unsafe_allow_html=True)
     
         
-    with st.expander('2.10 Suppression des doublons après nettoyage'): #2.10
+    with st.expander('**2.10 Suppression des doublons après nettoyage**'): #2.10
         st.markdown("""Une fois toutes ces étapes de nettoyage finalisées, nous supprimons une deuxième fois les doublons dans le jeu de données restant.
 """)
         df=pd.read_excel('tableau.xlsx', sheet_name='duplicate_delete')
