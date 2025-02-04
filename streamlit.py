@@ -356,7 +356,7 @@ if page == pages[3]:  #Data Visualisation
     # Renommer les colonnes disponibles en affichage lisible (utilisation du dictionnaire)
     colonnes_disponibles_renommees = [colonnes_renommees[col] for col in colonnes_disponibles]
     # Liste déroulante pour choisir la colonne pour l'axe X avec les noms clairs
-    axe_x_choisi = st.selectbox('Choisissez la colonne pour l\'axe X', colonnes_disponibles_renommees)
+    axe_x_choisi = st.selectbox('**Choisissez la colonne pour l\'axe X**', colonnes_disponibles_renommees)
     # On récupère la colonne d'origine en fonction du choix fait par l'utilisateur
     axe_x = [col for col, name in colonnes_renommees.items() if name == axe_x_choisi][0]
     # L'axe Y est fixe sur 'Ewltp (g/km)' pour les émissions CO2
