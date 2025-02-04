@@ -44,17 +44,12 @@ st.markdown(
 
 #region members
 # Sidebar title
-st.sidebar.title("Membres du projet :")
+st.sidebar.title("Owner du projet :")
 
 # Liste des membres avec leurs liens GitHub et LinkedIn
 members = [
-    {"name": "Antoine BARBIER",
-    "github": "https://github.com/Antoine-DA",
-    "linkedin": "https://www.linkedin.com/in/antoine-barbier-83654415b/"},
-    {"name": "Flora BREN",
-    "github": "https://github.com/flora-br",
-    "linkedin": "https://www.linkedin.com/in/flora-b-68a80013a"},
-    {"name": "Thibault EL MANSOURI",
+
+    {"name": "T. EL MANSOURI",
     "github": "https://github.com/thibanso",
     "linkedin": "https://www.linkedin.com/in/el-mansouri-299932130/"},
 ]
@@ -369,13 +364,22 @@ if page == pages[3]:  #Data Visualisation
     axe_y_renomme = colonnes_renommees[axe_y]  # Nom affiché pour l'axe Y
     # Créer le graphique de relation entre les colonnes choisies
     st.write("Voici le graphique :")
-    plt.figure(figsize=(10, 8))
-    sns.scatterplot(x=axe_x, y=axe_y, hue='fuel_type', data=data_cleaned)
-    plt.title(f'Relation entre la variable {axe_x_choisi} et les émissions CO2 en g/km')
-    plt.xlabel(axe_x_choisi)
-    plt.ylabel(axe_y_renomme)
-    plt.legend(title='Type de carburant')
-    st.pyplot(plt)  # Affiche le graphique dans Streamlit
+    # Créer le scatter plot avec Plotly
+    fig = px.scatter(
+    data_cleaned, 
+    x=axe_x, 
+    y=axe_y, 
+    color='fuel_type', 
+    title=f'Relation entre {axe_x_choisi} et {axe_y_renomme}',
+    labels={axe_x: axe_x_choisi, axe_y: axe_y_renomme, 'fuel_type': 'Type de carburant'},
+    hover_data=data_cleaned.columns  # Ajoute plus d'infos au survol
+    )
+
+    # Ajuster la taille du graphique
+    fig.update_layout(width=800, height=600)
+
+    # Afficher le graphique dans Streamlit
+    st.plotly_chart(fig)
     # Texte explicatif pour le scatterplot
     if axe_x == 'm (kg)':  # Masse du véhicule
         st.markdown("""
