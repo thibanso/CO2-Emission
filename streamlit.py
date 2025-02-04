@@ -362,13 +362,20 @@ if page == pages[3]:  #Data Visualisation
     axe_y_renomme = colonnes_renommees[axe_y]  # Nom affiché pour l'axe Y
     # Créer le graphique de relation entre les colonnes choisies
     st.write("Voici le graphique :")
-    plt.figure(figsize=(10, 8))
-    sns.scatterplot(x=axe_x, y=axe_y, hue='fuel_type', data=data_cleaned)
-    plt.title(f'Relation entre la variable {axe_x_choisi} et les émissions CO2 en g/km')
-    plt.xlabel(axe_x_choisi)
-    plt.ylabel(axe_y_renomme)
-    plt.legend(title='Type de carburant')
-    st.pyplot(plt)  # Affiche le graphique dans Streamlit
+    # Créer le scatter plot avec Plotly
+    fig = px.scatter(
+    data_cleaned, 
+    x=axe_x, 
+    y=axe_y, 
+    color='fuel_type', 
+    title=f'Relation entre {axe_x_choisi} et {axe_y_renomme}',
+    labels={axe_x: axe_x_choisi, axe_y: axe_y_renomme, 'fuel_type': 'Type de carburant'},
+    hover_data=data_cleaned.columns  # Ajoute plus d'infos au survol
+    )
+    # Ajuster la taille du graphique
+    fig.update_layout(width=1000, height=800)
+    # Afficher le graphique dans Streamlit
+    st.plotly_chart(fig)
     # Texte explicatif pour le scatterplot
     if axe_x == 'm (kg)':  # Masse du véhicule
         st.markdown("""
